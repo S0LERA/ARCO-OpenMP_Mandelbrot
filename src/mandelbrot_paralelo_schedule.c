@@ -10,6 +10,7 @@
  * Compilación:
  *  gcc mandelbrot_secuencial.c -o mandelbrot_secuencial -lm -fopenmp -O1 -Wno-unused-result
  *  gcc mandelbrot_paralelo.c -o mandelbrot_paralelo -lm -fopenmp -O1 -Wno-unused-result
+ *  gcc mandelbrot_paralelo_schedule.c -o mandelbrot_paralelo_schedule -lm -fopenmp -O1 -Wno-unused-result
  * 
  * Ejecución: ./mandelbrot_secuencial <archivo de entrada>
  * 
@@ -111,32 +112,31 @@ int main(int argc, char *argv[])	{
 		
 		int num_hilos = 4;
         int pixeles_totales = height*width;
-		int valores[pixeles_totales];
+		int valores[height][width];
         int tamanio_region = (height/num_hilos);
         int pixeles_por_region = tamanio_region*width;
 
         omp_set_num_threads(omp_get_num_procs());
-		#pragma omp parallel
+		#pragma omp parallel 
         {
             int id = omp_get_thread_num();
             int valor = 0;
-            int inicio_region =  tamanio_region * id;
-            int fin_region = inicio_region + tamanio_region;
-            int contador = 0;
 
-            for(i = inicio_region; i < fin_region; i++){
+                                //Aquí podemos darle las distintas opciones al planificador
+        #pragma omp for schedule(dynamic,1)
+            for(i = 0; i < height; i++){
                 for(j = 0; j < width; j++) {
                     x = xmin + j/k; 
                     y = ymax - i/k; 
                     valor = mandel_val(x, y, MAX_ITER);
-                    valores[(pixeles_por_region*id) + contador] = valor;
-                    contador = contador + 1;
+                    valores[i][j] = valor;
                 }
             }     
         }
             
-                for(int i = 0; i< pixeles_totales;i++){
-                    value = valores[i];
+                for(i = 0; i< height;i++){
+                    for(j = 0; j< width;j++){
+                    value = valores[i][j];
 				if(value == -1)	// se supone que (x+i·y) pertenece a M --> pixel blanco
 					fprintf(f_imag, " 255 255 255 "); 
 				else
@@ -147,6 +147,7 @@ int main(int argc, char *argv[])	{
 					valuer = valueg >> 8;   valueg = valueg % 256;
 					fprintf(f_imag," %d %d %d ",valuer,valueg,valueb);
 				}
+                    }
 			}
             
 		fprintf(f_imag, "\n");	fclose(f_imag);
