@@ -109,13 +109,13 @@ int main(int argc, char *argv[])	{
 		// B4. Se calcula el punto (x,y) y se determina si incluir (x + i·y) en el conjunto de Mandelbrot
 		// B5. Se determina el color del pixel del número (x + y·i) y se imprime en el archivo
 		
-		int num_hilos = 4;
+		int num_hilos = omp_get_num_procs();
         int pixeles_totales = height*width;
 		int valores[pixeles_totales];
         int tamanio_region = (height/num_hilos);
         int pixeles_por_region = tamanio_region*width;
 
-        omp_set_num_threads(omp_get_num_procs());
+        omp_set_num_threads(num_hilos);
 		#pragma omp parallel
         {
             int id = omp_get_thread_num();

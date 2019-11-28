@@ -21,3 +21,7 @@ Repositorio para el trabajo de OpenMP de Arquitectura de Computadores, basado en
    - Array de resultados bidimensional.
    - Añadido for paralelo para la planificación.
  - El número de hilos ahora se asigna automáticamente según los procesadores disponibles de cada equipo.
+
+### Versión 2.5
+ - Arreglado el fallo del número de hilos.
+   - La variable numero de hilos no concordaba con la función de obtener los procesadores.
