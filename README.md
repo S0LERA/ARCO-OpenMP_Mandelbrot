@@ -10,3 +10,8 @@ Repositorio para el trabajo de OpenMP de Arquitectura de Computadores, basado en
  - Estructura paralela.
  - Separacion de B4 y B5.
  - No funcional.
+
+### Version 1.0
+ - Primera version paralela funcional.
+ - Cada hilo calcula valores para una region y todos guardan en una variable compartida.
+ - Variables renombradas.

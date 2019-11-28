@@ -9,6 +9,7 @@
  
  * Compilación:
  *  gcc mandelbrot_secuencial.c -o mandelbrot_secuencial -lm -fopenmp -O1 -Wno-unused-result
+ *  gcc mandelbrot_paralelo.c -o mandelbrot_paralelo -lm -fopenmp -O1 -Wno-unused-result
  * 
  * Ejecución: ./mandelbrot_secuencial <archivo de entrada>
  * 
@@ -109,32 +110,33 @@ int main(int argc, char *argv[])	{
 		// B5. Se determina el color del pixel del número (x + y·i) y se imprime en el archivo
 		
 		int num_hilos = 4;
-		int valores_generales[height*width];
+        int pixeles_totales = height*width;
+		int valores[pixeles_totales];
+        int tamanio_region = (height/num_hilos);
+        int pixeles_por_region = tamanio_region*width;
 
         omp_set_num_threads(num_hilos);
 		#pragma omp parallel
         {
             int id = omp_get_thread_num();
-            int valores[(height*width)/num_hilos];
-            int tamanio_region = (height/num_hilos);
-            int inicioregion =  tamanio_region * id;
-            int finregion = inicioregion + tamanio_region;
+            int valor = 0;
+            int inicio_region =  tamanio_region * id;
+            int fin_region = inicio_region + tamanio_region;
             int contador = 0;
 
-            for(i = inicioregion; i < finregion; i++){
+            for(i = inicio_region; i < fin_region; i++){
                 for(j = 0; j < width; j++) {
                     x = xmin + j/k; 
                     y = ymax - i/k; 
-                    value = mandel_val(x, y, MAX_ITER);
-                    valores[contador] = value;
+                    valor = mandel_val(x, y, MAX_ITER);
+                    valores[(pixeles_por_region*id) + contador] = valor;
                     contador = contador + 1;
                 }
-            }//provisional
-            
+            }     
         }
             
-metodo1{
-            {
+                for(int i = 0; i< pixeles_totales;i++){
+                    value = valores[i];
 				if(value == -1)	// se supone que (x+i·y) pertenece a M --> pixel blanco
 					fprintf(f_imag, " 255 255 255 "); 
 				else
@@ -146,7 +148,7 @@ metodo1{
 					fprintf(f_imag," %d %d %d ",valuer,valueg,valueb);
 				}
 			}
-		}
+            
 		fprintf(f_imag, "\n");	fclose(f_imag);
 	
 		// B6. Informamos al usuario
