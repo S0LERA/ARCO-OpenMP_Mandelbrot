@@ -25,3 +25,8 @@ Repositorio para el trabajo de OpenMP de Arquitectura de Computadores, basado en
 ### Versión 2.5
  - Arreglado el fallo del número de hilos.
    - La variable numero de hilos no concordaba con la función de obtener los procesadores.
+
+### Versión 2.8
+ - Arreglado funcionamiento del programa
+   - A simple vista las salidas parecian ser iguales.
+   - Se han hecho privadas las variables x e y para reparar esto.
