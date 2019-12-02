@@ -123,7 +123,7 @@ int main(int argc, char *argv[])	{
             int valor = 0;
 
                                 //Aquí podemos darle las distintas opciones al planificador
-        #pragma omp for schedule(dynamic,1)
+        #pragma omp for private(x,y) schedule(dynamic,500)
             for(i = 0; i < height; i++){
                 for(j = 0; j < width; j++) {
                     x = xmin + j/k; 
