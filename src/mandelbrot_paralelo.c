@@ -116,7 +116,7 @@ int main(int argc, char *argv[])	{
         int pixeles_por_region = tamanio_region*width;
 
         omp_set_num_threads(num_hilos);
-		#pragma omp parallel private(x,y)
+		#pragma omp parallel
         {
             int id = omp_get_thread_num();
             int valor = 0;
